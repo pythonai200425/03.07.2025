@@ -106,6 +106,7 @@ for row in result:
     #          0   1     2    3        4
     # COMPANY (ID, NAME, AGE, ADDRESS, SALARY)
     print(row['name'])
+    print(dict(row))  # see json dump
 
 print('SELECT * FROM COMPANY fetchone -> result=')
 cursor.execute('''
@@ -140,9 +141,43 @@ while True:
         INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY)
         VALUES (?, ?, ?, ?, ?);
         ''', (new_id, new_name, new_age, new_address, new_salary))
+        last_inserted = cursor.lastrowid
         break
     except:
         print('=== cannot insert this row. try again ===')
+
+
+# 1 - print all
+print('SELECT * FROM COMPANY fetchone -> result=')
+cursor.execute('''
+SELECT * FROM COMPANY;
+''')
+result = cursor.fetchall()
+for row in result:
+    print(dict(row))
+
+# 2 - print
+print('SELECT * FROM COMPANY fetchall [-1]')
+cursor.execute('''
+SELECT * FROM COMPANY;
+''')
+result = cursor.fetchall()
+print(dict(result[-1])) # [1,2,3,4] [-1] == 4
+# 3
+print('SELECT * FROM COMPANY fetchone where id == new_id')
+cursor.execute('''
+SELECT * FROM COMPANY WHERE ID = ?;
+''', (new_id,))
+result = cursor.fetchone()
+print(dict(result))
+# 4
+# print('SELECT * FROM COMPANY fetchone where id == last_inserted')
+# cursor.execute('''
+# SELECT * FROM COMPANY WHERE ID = ?;
+# ''', (last_inserted,))
+# print(last_inserted)
+# result = cursor.fetchone()
+# print(dict(result))
 
 conn.commit()  # write changes
 
