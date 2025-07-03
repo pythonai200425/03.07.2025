@@ -143,8 +143,11 @@ while True:
         ''', (new_id, new_name, new_age, new_address, new_salary))
         last_inserted = cursor.lastrowid
         break
+    except (sqlite3.IntegrityError, sqlite3.OperationalError) as e:
+        print('db error ', e)
     except:
         print('=== cannot insert this row. try again ===')
+
 
 
 # 1 - print all
