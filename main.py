@@ -24,7 +24,7 @@ cursor = conn.cursor()
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS COMPANY(
     ID INT PRIMARY KEY NOT NULL,
-    NAME TEXT NOT NULL default 'unknown',
+    NAME TEXT NOT NULL,
     AGE INT NOT NULL,
     ADDRESS CHAR(50),
     SALARY REAL
@@ -123,8 +123,26 @@ print(result['name'])
 # 2
 # run insert
 # select * to find and show the new row...
+# add try-except to make sure there is no error
+# **bonus** insert using while-loop until it succeed
 # 3
 # run select to present the new row
+
+# solution:
+while True:
+    try:
+        new_id = int(input('enter id:'))
+        new_name = input('enter name:')
+        new_age = int(input('enter age:'))
+        new_address = input('enter address:')
+        new_salary = float(input('enter salary:'))
+        cursor.execute('''
+        INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY)
+        VALUES (?, ?, ?, ?, ?);
+        ''', (new_id, new_name, new_age, new_address, new_salary))
+        break
+    except:
+        print('=== cannot insert this row. try again ===')
 
 conn.commit()  # write changes
 
