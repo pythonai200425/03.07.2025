@@ -11,6 +11,9 @@ if os.path.exists('db1.db'):
 # if does exist -> connect
 conn = sqlite3.connect('db1.db')
 
+# allow usage of column name, i.e. row['age']
+conn.row_factory = sqlite3.Row  # ...magic ...
+
 # create in memory
 # erase after program exit
 # conn = sqlite3.connect(':memory:')
@@ -67,11 +70,61 @@ INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY)
 VALUES (?, ?, ?, ?, ?);
 ''', data)
 
+# unsafe
 cursor.execute('''
 UPDATE COMPANY SET ADDRESS = 'Texas' WHERE ID = 6;
 ''')
+
 # targil - change to ?
-# **bonus** - change to texas-[current-time]
+# **bonus** - change to texas-[current-time] i.e. texas-19:07:00
+
+# solution
+# safe
+cursor.execute('''
+UPDATE COMPANY SET ADDRESS = ? WHERE ID = ?;
+''', ('Texas', 6))
+# bonus
+import datetime
+time_now = datetime.datetime.now().strftime('%H:%M:%S')
+address_with_time = "Texas " + time_now
+cursor.execute('''
+UPDATE COMPANY SET ADDRESS = ? WHERE ID = ?;
+''', (address_with_time, 6))
+
+cursor.execute('''
+DELETE FROM COMPANY WHERE ID = ?
+''', (5,))
+
+cursor.execute('''
+SELECT * FROM COMPANY;
+''')
+
+print('SELECT * FROM COMPANY result=')
+result = cursor.fetchall()  # returns list of tuples [(), () ...]
+
+for row in result:
+    #          0   1     2    3        4
+    # COMPANY (ID, NAME, AGE, ADDRESS, SALARY)
+    print(row['name'])
+
+print('SELECT * FROM COMPANY fetchone -> result=')
+cursor.execute('''
+SELECT * FROM COMPANY;
+''')
+result = cursor.fetchone()  # returns 1 tuple
+print(result['name'])
+
+# input from user:
+# 1 input data
+# COMPANY (ID, NAME, AGE, ADDRESS, SALARY)
+# id , name, age, address, salary
+# input and float(input)
+# ie id = int(input('enter id:'))
+# 2
+# run insert
+# select * to find and show the new row...
+# 3
+# run select to present the new row
 
 conn.commit()  # write changes
 
