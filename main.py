@@ -70,6 +70,8 @@ VALUES (?, ?, ?, ?, ?);
 cursor.execute('''
 UPDATE COMPANY SET ADDRESS = 'Texas' WHERE ID = 6;
 ''')
+# targil - change to ?
+# **bonus** - change to texas-[current-time]
 
 conn.commit()  # write changes
 
